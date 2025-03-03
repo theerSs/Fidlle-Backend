@@ -1,20 +1,18 @@
 ﻿using Fidlle.Application.DTO;
 using Fidlle.Application.UseCases.Interfaces;
-using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fidlle.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController(IAntiforgery antiforgery, IRegisterUserUseCase registerUserUseCase, ILoginUserUseCase loginUserUseCase) : ControllerBase
+    public class AccountController(IRegisterUserUseCase registerUserUseCase, ILoginUserUseCase loginUserUseCase) : ControllerBase
     {
 
         [HttpGet("csrf-token")]
         public IActionResult GetCsrfToken()
         {
-            var tokens = antiforgery.GetAndStoreTokens(HttpContext);
-            HttpContext.Response.Headers.Append("X-CSRF-TOKEN", tokens.RequestToken);
+
             return NoContent();
         }
 
