@@ -11,24 +11,22 @@ namespace Fidlle.Application.Service.Implementations
     {
         private readonly string pepper = "YourSecretPepperValue"; // Store this securely
 
-        public async Task<UserDto?> AuthenticateAsync(string username, string password)
+        public async Task<bool> AuthenticateAsync(string email, string password)
         {
-            var user = await userRepository.GetUserByUsernameAsync(username);
+            var user = await userRepository.GetUserByEmailAsync(email);
             if (user == null || !VerifyPassword(user.PasswordHash, password))
             {
-                return null;
+                return false;
             }
 
-            return new UserDto
-            {
-                Username = user.Username
-            };
+            return true;
         }
 
-        public async Task<bool> CreateUserAsync(string username, string password)
+        public async Task<bool> CreateUserAsync(string username, string email, string password)
         {
             var user = new User
             {
+                Email = email,
                 Username = username,
                 PasswordHash = HashPassword(password)
             };

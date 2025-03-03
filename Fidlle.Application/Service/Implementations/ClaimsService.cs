@@ -6,11 +6,11 @@ namespace Fidlle.Application.Service.Implementations
 {
     public class ClaimsService : IClaimsService
     {
-        public ClaimsPrincipal CreateClaimsPrincipal(string username, string authetnicationScheme)
+        public ClaimsPrincipal CreateClaimsPrincipal(string email, string authetnicationScheme)
         {
             var claims = new List<Claim>
             {
-                new(ClaimTypes.Name, username)
+                new(ClaimTypes.Email, email)
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, authetnicationScheme);

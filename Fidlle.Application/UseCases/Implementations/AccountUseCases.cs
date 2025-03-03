@@ -10,19 +10,19 @@ namespace Fidlle.Application.UseCases.Implementations
     {
         public async Task<ClaimsPrincipal?> LoginUser(LoginDto loginDto, string authScheme)
         {
-            var userDto = await userService.AuthenticateAsync(loginDto.Username, loginDto.Password);
-            if (userDto == null)
+            var isAuthenticated = await userService.AuthenticateAsync(loginDto.Email, loginDto.Password);
+            if (!isAuthenticated)
             {
                 return null;
             }
-            var claimsPrincipal = claimsService.CreateClaimsPrincipal(userDto.Username, authScheme);
+            var claimsPrincipal = claimsService.CreateClaimsPrincipal(loginDto.Email, authScheme);
 
             return claimsPrincipal;
         }
 
         public async Task<bool> RegisterUser(RegisterDto registerDto)
         {
-            return await userService.CreateUserAsync(registerDto.Username, registerDto.Password);
+            return await userService.CreateUserAsync(registerDto.Username, registerDto.Email, registerDto.Password);
         }
     }
 }
