@@ -1,18 +1,24 @@
 ﻿using Fidlle.Application.DTO;
 using Fidlle.Application.UseCases.Interfaces;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Fidlle.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController(IRegisterUserUseCase registerUserUseCase, ILoginUserUseCase loginUserUseCase) : ControllerBase
+    public class AccountController(IAntiforgery antiforgery, IRegisterUserUseCase registerUserUseCase, ILoginUserUseCase loginUserUseCase) : ControllerBase
     {
 
         [HttpGet("csrf-token")]
         public IActionResult GetCsrfToken()
         {
-
+            var tokens = antiforgery.GetAndStoreTokens(HttpContext);
+            HttpContext.Response.Headers.Append("X-CSRF-TOKEN", tokens.RequestToken);
             return NoContent();
         }
 
@@ -31,22 +37,25 @@ namespace Fidlle.Api.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login([FromBody] LoginDto loginDto)
         {
-            var userDto = await loginUserUseCase.ExecuteAsync(loginDto);
-            if (userDto == null)
+            var claimsPrinciple = await loginUserUseCase.ExecuteAsync(loginDto, CookieAuthenticationDefaults.AuthenticationScheme);
+               
+            if(claimsPrinciple == null)
             {
                 return Unauthorized();
-            };
+            }
 
-            HttpContext.Session.SetString("Username", userDto.Username);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrinciple);
 
-            return Ok(userDto);
+            return Ok();
         }
 
+        [Authorize]
         [HttpPost("logout")]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            HttpContext.Session.Clear();
-            return NoContent();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return Ok();
         }
+
     }
 }
