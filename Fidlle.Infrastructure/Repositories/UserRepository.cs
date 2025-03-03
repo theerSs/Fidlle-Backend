@@ -12,6 +12,11 @@ namespace Fidlle.Infrastructure.Repositories
             await context.Users.AddAsync(user);
         }
 
+        public async Task<User?> GetUserByIdAsync(Guid id)
+        {
+            return await context.Users.FirstOrDefaultAsync(u => u.Id == id);
+        }
+
         public async Task<User?> GetUserByEmailAsync(string email)
         {
             return await context.Users.FirstOrDefaultAsync(u => u.Email == email);

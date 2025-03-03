@@ -4,6 +4,6 @@ namespace Fidlle.Application.Service.Interfaces
 {
     public interface IClaimsService
     {
-        ClaimsPrincipal CreateClaimsPrincipal(string email, string authenticationScheme);
+        ClaimsPrincipal CreateClaimsPrincipal(Guid id, string authenticationScheme);
     }
 }

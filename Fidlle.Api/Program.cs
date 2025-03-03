@@ -8,11 +8,17 @@ using Fidlle.Application.UseCases.Implementations;
 using Fidlle.Application.UseCases.Interfaces;
 using Fidlle.Infrastructure.Repositories;
 using Fidlle.Api.Middlewares;
+using FluentValidation.AspNetCore;
+using Fidlle.Application.Validators;
+using FluentValidation;
+using Fidlle.Application.DTO;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddControllers();
+builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
+builder.Services.AddTransient<IValidator<RegisterDto>, RegisterDtoValidator>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
