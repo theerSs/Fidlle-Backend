@@ -10,18 +10,9 @@ builder.Services.AddServices();
 builder.Services.AddRepositories();
 builder.Services.AddSecurity();
 builder.Services.AddDatabase(builder.Configuration);
-builder.Services.AddSwagger();
 
 var app = builder.Build();
 app.UseMiddleware<AntiforgeryMiddleware>();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
 
 app.UseHttpsRedirection();
 
