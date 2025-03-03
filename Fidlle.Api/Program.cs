@@ -35,8 +35,7 @@ builder.Services.AddAntiforgery(options =>
 {
     options.HeaderName = "X-CSRF-TOKEN";
 });
-builder.Services.AddTransient<IRegisterUserUseCase, RegisterUseCase>();
-builder.Services.AddTransient<ILoginUserUseCase, LoginUserUseCase>();
+builder.Services.AddTransient<IAccountUseCases, AccountUseCases>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IClaimsService, ClaimsService>();

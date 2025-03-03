@@ -3,7 +3,6 @@ using Fidlle.Application.UseCases.Interfaces;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 
@@ -11,7 +10,7 @@ namespace Fidlle.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController(IAntiforgery antiforgery, IRegisterUserUseCase registerUserUseCase, ILoginUserUseCase loginUserUseCase) : ControllerBase
+    public class AccountController(IAntiforgery antiforgery, IAccountUseCases accountUseCases) : ControllerBase
     {
 
         [HttpGet("csrf-token")]
@@ -19,13 +18,13 @@ namespace Fidlle.Api.Controllers
         {
             var tokens = antiforgery.GetAndStoreTokens(HttpContext);
             HttpContext.Response.Headers.Append("X-CSRF-TOKEN", tokens.RequestToken);
-            return NoContent();
+            return Ok();
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
-            var result = await registerUserUseCase.ExecuteAsync(registerDto);
+            var result = await accountUseCases.RegisterUser(registerDto);
             if(!result)
             {
                 return BadRequest();
@@ -35,9 +34,9 @@ namespace Fidlle.Api.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<UserDto>> Login([FromBody] LoginDto loginDto)
+        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-            var claimsPrinciple = await loginUserUseCase.ExecuteAsync(loginDto, CookieAuthenticationDefaults.AuthenticationScheme);
+            var claimsPrinciple = await accountUseCases.LoginUser(loginDto, CookieAuthenticationDefaults.AuthenticationScheme);
                
             if(claimsPrinciple == null)
             {

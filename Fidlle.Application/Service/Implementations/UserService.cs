@@ -3,11 +3,14 @@ using Fidlle.Application.IRepositories;
 using Fidlle.Application.Service.Interfaces;
 using Fidlle.Domain.Entities;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace Fidlle.Application.Service.Implementations
 {
     public class UserService(IUserRepository userRepository) : IUserService
     {
+        private readonly string pepper = "YourSecretPepperValue"; // Store this securely
+
         public async Task<UserDto?> AuthenticateAsync(string username, string password)
         {
             var user = await userRepository.GetUserByUsernameAsync(username);
@@ -17,7 +20,7 @@ namespace Fidlle.Application.Service.Implementations
             }
 
             return new UserDto
-            { 
+            {
                 Username = user.Username
             };
         }
@@ -36,10 +39,6 @@ namespace Fidlle.Application.Service.Implementations
             return true;
         }
 
-        public Task LogoutAsync()
-        {
-            throw new NotImplementedException();
-        }
         private string HashPassword(string password)
         {
             byte[] salt = new byte[128 / 8];
@@ -48,17 +47,30 @@ namespace Fidlle.Application.Service.Implementations
                 rng.GetBytes(salt);
             }
 
-            //TODO: Hash password
+            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password: password + pepper,
+                salt: salt,
+                prf: KeyDerivationPrf.HMACSHA256,
+                iterationCount: 100000,
+                numBytesRequested: 256 / 8));
 
-            string hashed = password;
-
-            return hashed;
+            return $"{Convert.ToBase64String(salt)}:{hashed}";
         }
 
         private bool VerifyPassword(string hashedPassword, string providedPassword)
         {
-            // Implement password verification logic here
-            return hashedPassword == providedPassword; // Simplified for the example
+            var parts = hashedPassword.Split(':');
+            var salt = Convert.FromBase64String(parts[0]);
+            var storedHash = parts[1];
+
+            var providedHash = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password: providedPassword + pepper,
+                salt: salt,
+                prf: KeyDerivationPrf.HMACSHA256,
+                iterationCount: 100000, // Increased iteration count
+                numBytesRequested: 256 / 8));
+
+            return storedHash == providedHash;
         }
     }
 }

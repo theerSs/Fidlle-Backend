@@ -6,6 +6,5 @@ namespace Fidlle.Application.Service.Interfaces
     {
         Task<bool> CreateUserAsync(string username, string password);
         Task<UserDto?> AuthenticateAsync(string username, string password);
-        Task LogoutAsync();
     }
 }
