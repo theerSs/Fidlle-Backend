@@ -65,7 +65,7 @@ namespace Fidlle.Application.Service.Implementations
                 password: providedPassword + pepper,
                 salt: salt,
                 prf: KeyDerivationPrf.HMACSHA256,
-                iterationCount: 100000, // Increased iteration count
+                iterationCount: 100000,
                 numBytesRequested: 256 / 8));
 
             return storedHash == providedHash;
