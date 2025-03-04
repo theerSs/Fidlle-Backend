@@ -1,10 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Fidlle.Application.DI;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Fidlle.Infrastructure.DI
 {
@@ -14,6 +11,7 @@ namespace Fidlle.Infrastructure.DI
         {
             services.AddDatabase(configuration);
             services.AddRepositories();
+            services.AddInfrastructureServices();
             return services;
         }
     }
