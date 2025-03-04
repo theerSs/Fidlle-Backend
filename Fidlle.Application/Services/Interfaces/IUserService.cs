@@ -1,6 +1,4 @@
-﻿using Fidlle.Application.DTO;
-
-namespace Fidlle.Application.Service.Interfaces
+﻿namespace Fidlle.Application.Services.Interfaces
 {
     public interface IUserService
     {

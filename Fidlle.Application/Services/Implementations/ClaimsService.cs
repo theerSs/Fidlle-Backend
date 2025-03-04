@@ -1,8 +1,8 @@
-﻿using Fidlle.Application.Service.Interfaces;
+﻿using Fidlle.Application.Services.Interfaces;
 using System.Security.Claims;
 
 
-namespace Fidlle.Application.Service.Implementations
+namespace Fidlle.Application.Services.Implementations
 {
     public class ClaimsService : IClaimsService
     {

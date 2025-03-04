@@ -1,9 +1,9 @@
 ﻿using Fidlle.Application.IRepositories;
-using Fidlle.Application.Service.Interfaces;
+using Fidlle.Application.Services.Interfaces;
 using Fidlle.Domain.Entities;
 using Fidlle.Shared.Interfaces;
 
-namespace Fidlle.Application.Service.Implementations
+namespace Fidlle.Application.Services.Implementations
 {
     public class UserService(IUserRepository userRepository, IPasswordService passwordService) : IUserService
     {

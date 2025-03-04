@@ -1,5 +1,5 @@
 ﻿using Fidlle.Application.DTO;
-using Fidlle.Application.Service.Interfaces;
+using Fidlle.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.Cookies;
