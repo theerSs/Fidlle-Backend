@@ -1,14 +1,17 @@
 ﻿using Fidlle.Application.IRepositories;
 using Fidlle.Infrastructure.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Fidlle.Api.Extensions
+namespace Fidlle.Infrastructure.DI
 {
-    public static class RepositoriesExtension
+    public static class RepositoriesDI
     {
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
-            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddScoped<IUserRepository, UserRepository>(); 
             return services;
+
         }
     }
 }
+

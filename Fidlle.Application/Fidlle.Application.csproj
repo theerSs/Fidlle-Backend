@@ -8,11 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="9.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Fidlle.Domain\Fidlle.Domain.csproj" />
+    <ProjectReference Include="..\Shared\Fidlle.Shared.csproj" />
   </ItemGroup>
 
 </Project>

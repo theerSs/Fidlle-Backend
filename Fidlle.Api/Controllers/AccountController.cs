@@ -1,5 +1,5 @@
 ﻿using Fidlle.Application.DTO;
-using Fidlle.Application.UseCases.Interfaces;
+using Fidlle.Application.Service.Interfaces;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -10,9 +10,8 @@ namespace Fidlle.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController(IAntiforgery antiforgery, IAccountUseCases accountUseCases) : ControllerBase
+    public class AccountController(IAntiforgery antiforgery, IUserService userService, IClaimsService claimsService) : ControllerBase
     {
-
         [HttpGet("csrf-token")]
         public IActionResult GetCsrfToken()
         {
@@ -24,26 +23,27 @@ namespace Fidlle.Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
-            var result = await accountUseCases.RegisterUser(registerDto);
-            if(!result)
+            var result = await userService.CreateUserAsync(registerDto.Username, registerDto.Email, registerDto.Password);
+            if (!result)
             {
                 return BadRequest();
             }
 
-            return Created();
+            return Created(string.Empty, null);
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-            var claimsPrinciple = await accountUseCases.LoginUser(loginDto, CookieAuthenticationDefaults.AuthenticationScheme);
-               
-            if(claimsPrinciple == null)
+            var userId = await userService.AuthenticateAsync(loginDto.Email, loginDto.Password);
+            if (userId == null)
             {
                 return Unauthorized();
             }
 
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrinciple);
+            var claimsPrincipal = claimsService.CreateClaimsPrincipal(userId.Value, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
 
             return Ok();
         }
@@ -55,6 +55,5 @@ namespace Fidlle.Api.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return Ok();
         }
-
     }
 }

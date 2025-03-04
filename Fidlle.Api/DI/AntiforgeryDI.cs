@@ -2,9 +2,9 @@
 
 namespace Fidlle.Api.Extensions
 {
-    public static class SecurityExtensions
+    public static class AntiforgeryDI
     {
-        public static IServiceCollection AddSecurity(this IServiceCollection services)
+        public static IServiceCollection AddAntiforgery(this IServiceCollection services)
         {
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
