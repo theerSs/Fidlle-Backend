@@ -11,6 +11,7 @@ builder.Services.AddApplicationLayer();
 builder.Services.AddInfrastructureLayer(builder.Configuration);
 
 var app = builder.Build();
+app.UseMiddleware<SecurityHeadersMiddleware>();
 app.UseMiddleware<AntiforgeryMiddleware>();
 
 app.UseHttpsRedirection();
