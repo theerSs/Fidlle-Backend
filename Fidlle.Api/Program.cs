@@ -1,5 +1,5 @@
 using Fidlle.Api.Middlewares;
-using Fidlle.Api.Extensions;
+using Fidlle.Api.DI;
 using Fidlle.Application.DI;
 using Fidlle.Infrastructure.DI;
 
@@ -11,6 +11,7 @@ builder.Services.AddApplicationLayer();
 builder.Services.AddInfrastructureLayer(builder.Configuration);
 
 var app = builder.Build();
+app.UseExceptionHandler(_ => { });
 app.UseMiddleware<SecurityHeadersMiddleware>();
 app.UseMiddleware<AntiforgeryMiddleware>();
 

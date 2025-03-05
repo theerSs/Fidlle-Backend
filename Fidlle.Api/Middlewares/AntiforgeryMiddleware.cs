@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Antiforgery;
+using Fidlle.Shared.Exceptions;
 
 namespace Fidlle.Api.Middlewares
 {
@@ -9,7 +10,14 @@ namespace Fidlle.Api.Middlewares
                 HttpMethods.IsPut(context.Request.Method) ||
                 HttpMethods.IsDelete(context.Request.Method))
             {
-                await antiforgery.ValidateRequestAsync(context);
+                try
+                {
+                    await antiforgery.ValidateRequestAsync(context);
+                }
+                catch (AntiforgeryValidationException)
+                {
+                    throw new ForbidException("Antiforgery token validation failed.");
+                }
             }
 
             await next(context);

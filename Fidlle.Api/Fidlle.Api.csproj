@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Fidlle.Application\Fidlle.Application.csproj" />
     <ProjectReference Include="..\Fidlle.Infrastructure\Fidlle.Infrastructure.csproj" />
+    <ProjectReference Include="..\Shared\Fidlle.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

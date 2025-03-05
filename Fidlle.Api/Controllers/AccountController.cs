@@ -23,11 +23,7 @@ namespace Fidlle.Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
-            var result = await userService.CreateUserAsync(registerDto.Username, registerDto.Email, registerDto.Password);
-            if (!result)
-            {
-                return BadRequest();
-            }
+            await userService.CreateUserAsync(registerDto.Username, registerDto.Email, registerDto.Password);
 
             return Created(string.Empty, null);
         }
@@ -36,13 +32,8 @@ namespace Fidlle.Api.Controllers
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
             var userId = await userService.AuthenticateAsync(loginDto.Email, loginDto.Password);
-            if (userId == null)
-            {
-                return Unauthorized();
-            }
-
+           
             var claimsPrincipal = claimsService.CreateClaimsPrincipal(userId.Value, CookieAuthenticationDefaults.AuthenticationScheme);
-
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
 
             return Ok();
