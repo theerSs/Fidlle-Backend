@@ -2,7 +2,7 @@
 {
     public class BadRequestException : Exception
     {
-        public BadRequestException() : base("Bad request")
+        public BadRequestException() : base("Bad Request")
         {
         }
 
